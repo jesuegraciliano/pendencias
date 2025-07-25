@@ -7,8 +7,8 @@
 </head>
 <body>
     <header class="cabecalho">
-        <img src="agenda.jpg" alt="Logotipo IFSC" class="logo-ifsc">
-        <h1>Chatbot MINHAS PENDÊNCIAS </h1>
+        <img src="agendas.png" alt="ANOTE" class="logo-ifsc">
+        <h1>MINHAS PENDÊNCIAS </h1>
     </header>
 
     <main class="chat-container">
