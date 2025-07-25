@@ -20,7 +20,7 @@
     <div class="chat-container">
       <div id="chat-messages" class="chat-messages"></div>
       <div class="chat-input-area">
-        <input type="text" id="user-input" placeholder="Digite sua pergunta aqui..." />
+        <input type="text" id="user-input" placeholder="Digite a pendência..." />
         <button id="send-button">Enviar</button>
       </div>
     </div>
@@ -64,9 +64,9 @@
           const data = await response.json();
 
           if (response.ok) {
-            addMessage('bot', data.output || 'Desculpe, não consegui obter uma resposta.');
+            addMessage('bot', data.output || 'Desculpe, não entendi a pendência.');
           } else {
-            addMessage('bot', Erro: ${data.error || 'Resposta não recebida.'});
+            addMessage('bot', Erro: ${data.error || 'Pendência não recebida.'});
           }
 
         } catch (error) {
