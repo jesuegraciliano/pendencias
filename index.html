@@ -3,43 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chatbot IFSC</title>
+  <title>Chatbot Minhas Pendências</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       text-align: center;
-      background-color: #f5f5f5;
+      background: #f4f4f4;
+      margin: 0;
       padding-top: 50px;
     }
-    .chat-container {
+    .container {
+      background: #fff;
       max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
+      margin: auto;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-    #user-input {
-      width: 80%;
+    input {
+      width: 70%;
       padding: 10px;
+      margin-right: 10px;
     }
-    #send-button {
+    button {
       padding: 10px 20px;
       background-color: green;
       color: white;
       border: none;
-      cursor: pointer;
       border-radius: 5px;
+    }
+    .mensagens {
+      text-align: left;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div class="chat-container">
+  <div class="container">
+    <img src="https://www.ifsc.edu.br/o/ifsc-theme/images/logo-ifsc.png" alt="IFSC" height="80">
     <h2>Chatbot MINHAS PENDÊNCIAS ATUAIS</h2>
-    <input type="text" id="user-input" placeholder="Digite sua tarefa ou dúvida">
+    <input type="text" id="user-input" placeholder="Digite sua pendência" />
     <button id="send-button">Enviar</button>
-    <div id="chat-messages" style="margin-top:20px;"></div>
+
+    <div class="mensagens" id="chat-messages"></div>
   </div>
 
   <script>
@@ -50,8 +57,7 @@
 
       function addMessage(sender, text) {
         const div = document.createElement('div');
-        div.textContent = `${sender === 'user' ? 'Você: ' : 'Bot: '}${text}`;
-        div.style.textAlign = sender === 'user' ? 'right' : 'left';
+        div.innerHTML = `<strong>${sender}:</strong> ${text}`;
         chatMessages.appendChild(div);
       }
 
@@ -59,30 +65,19 @@
         const pergunta = userInput.value.trim();
         if (!pergunta) return;
 
-        addMessage('user', pergunta);
-        userInput.value = '';
-        userInput.disabled = true;
-        sendButton.disabled = true;
+        addMessage("Você", pergunta);
 
         try {
-          const response = await fetch('https://hook.jesue.site/webhook/pendencias', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ pergunta: pergunta, sessionId: 'teste123' }),
+          const resposta = await fetch("https://hook.jesue.site/webhook/pendencias", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pergunta: pergunta, sessionId: "sessao001" })
           });
 
-          const data = await response.json();
-          addMessage('bot', data.output || 'Resposta não recebida.');
-
-        } catch (err) {
-          console.error(err);
-          addMessage('bot', 'Erro ao conectar ao servidor.');
-        } finally {
-          userInput.disabled = false;
-          sendButton.disabled = false;
-          userInput.focus();
+          const json = await resposta.json();
+          addMessage("Bot", json.output || "Resposta não recebida.");
+        } catch (e) {
+          addMessage("Bot", "Erro na conexão com o webhook.");
         }
       }
 
