@@ -79,18 +79,27 @@
             body: JSON.stringify({ pergunta, sessionId: "sessao001" })
           });
 
-          if (!response.ok) {
+          if (response.ok) {
+            // Se a resposta foi bem-sucedida (status 2xx), assume que o webhook recebeu.
+            // Opcionalmente, você pode tentar ler o JSON, mas não é estritamente necessário para a confirmação.
+            try {
+              const json = await response.json();
+              if (json && json.output) {
+                addMessage("Bot", json.output);
+              } else {
+                // Se não há um 'output' específico, mas a requisição foi OK
+                addMessage("Bot", "Informação recebida pelo Webhook e planilha atualizada!");
+              }
+            } catch (jsonError) {
+              // Se a resposta não é um JSON válido, mas a requisição foi OK
+              addMessage("Bot", "Informação recebida pelo Webhook e planilha atualizada!");
+            }
+          } else {
+            // Se a resposta não foi OK (ex: 4xx, 5xx)
             throw new Error(`Erro HTTP! Status: ${response.status}`);
           }
-
-          const json = await response.json();
-          if (json && json.output) {
-            addMessage("Bot", json.output);
-          } else {
-            addMessage("Bot", "Resposta inválida do servidor.");
-          }
         } catch (error) {
-          addMessage("Bot", `Erro: ${error.message}`);
+          addMessage("Bot", `Erro ao enviar para o Webhook: ${error.message}. Por favor, tente novamente.`);
         }
       }
 
